@@ -1,0 +1,20 @@
+# pmf.cpp input-parameter file
+
+# :::::::::   pmf   :::::::::::::::::::::::::::
+# input
+INCOORD  c1c2c3c4str.dat 
+INPOTENE   out_exPotEne.dat 
+INENEPROB  Pc_T300.dat
+
+# output
+OUTPMF out_pmf.dat
+
+#  settings
+NUMSTRUCTURE 150  
+
+
+# :::::::::   PMF Calculation   :::::::::::::::::::::::::::::::::::::::
+TEMPERATURE 300
+BINSIZE 1
+MINCOORD -10 
+NUMBIN 20  
