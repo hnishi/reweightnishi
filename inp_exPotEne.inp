@@ -1,0 +1,20 @@
+# pcanishi input-parameter file
+
+# :::::::::   pca   :::::::::::::::::::::::::::
+# input
+REFPDBNAME  mdx.in.pdb
+COD1   mdx.crd
+#REFPDBNAME  ../samp/for_rmsd/traj/crystal_1st.pdb
+#COD1   ../samp/for_rmsd/traj/md_small.crd
+#COD2   ../samp/md_npt_10.cod
+#COD3   ../samp/npt_02.cod
+#COD3   ../samp/for_rmsd/traj/md_small.crd
+#COD4
+
+# output
+OUTFILE out_exPotEne.dat
+
+# trajectory settings
+STRIDE 1   # mabiki
+STARTFRAME  1
+
