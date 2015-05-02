@@ -126,6 +126,17 @@ int main(int argc, char *argv[]){
   }
   ofs1.close();
 
+  string outcheck = inp1.read("OUTCHECK").c_str() ;
+  if( outcheck != "NO" ){
+     ofstream ofs2; //check_flat
+     //ofs2.open( inp1.read("OUTCHECK").c_str() );
+     ofs2.open( outcheck.c_str() );
+     for(unsigned int i = 0;i<ene_prob.size();i++){
+        ofs2<<ene_prob[i]<<"    "<<check_flat[i]<<"\n";
+     }
+  ofs2.close();
+  cout<<endl<<outcheck<<" was output successfully"<<endl;
+  }
 
 /* (7) PMF calculation
  *

@@ -2,19 +2,20 @@
 
 # :::::::::   pmf   :::::::::::::::::::::::::::
 # input
-INFILE  file_3.dat 
-INPROB  Pc_T300.dat
+INFILE  file_3.dat  # column 1, 2: coordinates of PCA, column 3: potential energy
+INPROB  Pc_T300.dat  # probability distribution data (column 1: potential energy, column 2: probability) 
 
-# output
+# output 
 OUTPROB out_prob.dat
-OUTPMF out_pmf.dat
+OUTPMF out_pmf.dat 
+OUTCHECK out_check.dat  # NO or filename
 
 #  settings
-NUMSTRUCTURE 150  
+NUMSTRUCTURE 150  # num. of structures
 
 
 # :::::::::   PMF Calculation   :::::::::::::::::::::::::::::::::::::::
-TEMPERATURE 300
-BINSIZE 1
-MINCOORD -10 
-NUMBIN 20  
+TEMPERATURE 300  # arbitrary temperature
+BINSIZE 1  # bin size of pmf calculation
+MINCOORD -10  # lower bound of c1 and c2, PCA coordinates
+NUMBIN 20   # num. of bins
