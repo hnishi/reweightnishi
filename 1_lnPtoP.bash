@@ -1,5 +1,5 @@
 #!/bin/bash
 
-g++ lnPtoP.cpp -o lnPtoP.exe
+g++ lnPtoP.cpp -o lnPtoP.exe > res1.log
 
 ./lnPtoP.exe P_E_T300.dat Pc_T300.dat #$1:ln(P(E,300)), $2:output name
