@@ -6,6 +6,7 @@ INFILE  file_3.dat
 INPROB  Pc_T300.dat
 
 # output
+OUTPROB out_prob.dat
 OUTPMF out_pmf.dat
 
 #  settings

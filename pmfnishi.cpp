@@ -40,16 +40,16 @@ int main(int argc, char *argv[]){
 
 /*  OPEN FILE  
 */
-  ifstream ifs1(infile.c_str(),ifstream::in);
+  float tmp;
 
+  ifstream ifs1(infile.c_str(),ifstream::in);
   if(ifs1.fail()){
     cerr<<"cannot open file "<<infile<<endl;
     //exit(1);
     return 1;
   }
 
-  float tmp;
-  vector<float> c1, c2, prob;
+  vector<float> c1, c2, pote;
   //while(!ifs.eof()){
   //while(ifs.good()){
   for(int ii=0;ii<frame;ii++){
@@ -58,19 +58,81 @@ int main(int argc, char *argv[]){
     ifs1 >> tmp;
     c2.push_back(tmp);
     ifs1 >> tmp;
-    prob.push_back(tmp);
+    pote.push_back(tmp);
   }
 
   ifs1.close();
 
-  cout<<"DEBUG: prob.size() = "<<prob.size()<<endl;
+  cout<<"DEBUG: pote.size() = "<<pote.size()<<endl;
+  cout<<"DEBUG: pote[pote.size() -1] = "<<pote[pote.size() -1]<<endl;
+
+
+  ifstream ifs2(inprob.c_str(),ifstream::in);
+  if(ifs2.fail()){
+    cerr<<"cannot open file "<<inprob<<endl;
+    //exit(1);
+    return 1;
+  }
+
+  vector<float> ene_prob, prob;
+    ifs2 >> tmp;  //why outside of while-loop? because of ifs.eof 
+  while(!ifs2.eof()){
+  //while(ifs2.good()){
+    ene_prob.push_back(tmp);
+    ifs2 >> tmp;
+    prob.push_back(tmp);
+    ifs2 >> tmp;
+  }
+
+  ifs2.close();
+
+  //cout<<"DEBUG: prob.size() = "<<prob.size()<<endl;
+  //cout<<"DEBUG: prob[prob.size() -1] = "<<prob[prob.size() -1]<<endl;
+  //cout<<"DEBUG: ene_prob.size() = "<<ene_prob.size()<<endl;
+  //cout<<"DEBUG: ene_prob[ene_prob.size() -1] = "<<ene_prob[prob.size() -1]<<endl;
+
+/* (2)  assignment of probability
+ *
+ * */
+   cout<<endl<<"------- (2) assignment of probability --------- \n";
+   
+   int check_flat[ene_prob.size()];
+   for(unsigned int i=0;i<ene_prob.size();i++){
+      check_flat[i] = 0; //initializing by zero
+   }
+   vector<float> prob2;
+   for(int ii=0;ii<frame;ii++){
+      for(unsigned int jj=0;jj<ene_prob.size();jj++){
+         if( pote[ii] < ene_prob[jj] ){
+	    prob2.push_back( prob[jj] );
+	    check_flat[jj] ++ ;
+	    break;
+	 }
+      }
+   }
+   if( prob2.size() != frame ){
+      cout<<"WARNING: assignment of probability failed \n";
+      cout<<"num of assigned = "<<prob2.size()<<endl;
+   }
+   else{
+      cout<<"assignment of probability was ended successfully"<<endl;
+   }
+/*  OUTPUT FILE
+*/
+  ofstream ofs1;
+  ofs1.open( inp1.read("OUTPROB").c_str() );
+  for(unsigned int i = 0;i<prob2.size();i++){
+     ofs1<<prob2[i]<<"\n";
+  }
+  ofs1.close();
 
 
 /* (7) PMF calculation
  *
  * */
    cout<<endl<<"REPORT> (7) PMF calculation \n";
-   string pmfcalculation  = inp1.read("PMFCALCULATION");
+   //string pmfcalculation  = inp1.read("PMFCALCULATION");
+   string pmfcalculation  = "YES";
    if( pmfcalculation == "YES"){
 
    double length_bin = atof(inp1.read("BINSIZE").c_str());
@@ -87,7 +149,7 @@ int main(int argc, char *argv[]){
          pmf[j][i] = 0;
       }
    }
-   int count_pmf = 0;
+   int count_pmf = 0; float normcons = 0;
    for(unsigned int n=0;n<frame;n++){ //count
       for(int i=0;i<num_bin;i++){
          for(int j=0;j<num_bin;j++){
@@ -95,8 +157,10 @@ int main(int argc, char *argv[]){
  	    && c1[n] <= emin + length_bin * (j + 1) 
 	    && c2[n] > emin + length_bin * i
 	    && c2[n] <= emin + length_bin * (i + 1)     ){
-	       pmf[j][i] ++ ;
+	       //pmf[j][i] ++ ;
+	       pmf[j][i] = pmf[j][i] + prob2[n] ;
 	       count_pmf ++ ;
+	       normcons = normcons + prob2[n];
 	       //goto NEXT_PMF;
 	    }
          }
@@ -110,7 +174,8 @@ int main(int argc, char *argv[]){
    double min_pmf = 999999, max_pmf = -999999; 
    for(int i=0;i<num_bin;i++){ //normalization
       for(int j=0;j<num_bin;j++){
-         pmf[j][i] = pmf[j][i] / frame;
+         //pmf[j][i] = pmf[j][i] / frame;
+         pmf[j][i] = pmf[j][i] / normcons;
          if( pmf[j][i] <= min_pmf ){
             min_pmf = pmf[j][i];
          }
