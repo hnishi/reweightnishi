@@ -14,6 +14,13 @@
  * ********************************************/
 int main(int argc, char *argv[]){
 // INPUT_PARAMETERS
+// argv[1]: input parameter file
+  if( argv[1]==NULL ){
+    puts("No ARGUMEMTS");
+    puts("USAGE: ./a.out (argv[1]: input parameter file)" );
+    return 1;
+  }
+  cout<<"Your input-parameter file: "<<argv[1]<<endl;
    Inp_nishi inp1( argv[1] );
    
 /* (1) load trajectory by tra_nishi

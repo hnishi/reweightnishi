@@ -1,5 +1,4 @@
 #include"nlib.h"
-#include"math_nishi.h"
 
 // constant values
 #define GAS_CONST 8.31451  // gas constant, R ( joule/mol*k )
@@ -14,13 +13,57 @@
  * ********************************************/
 int main(int argc, char *argv[]){
 // INPUT_PARAMETERS
-   Inp_nishi inp1( argv[1] );
+// argv[1]: input parameter file
+  if( argv[1]==NULL ){
+    puts("No ARGUMEMTS");
+    puts("USAGE: ./a.out (argv[1]: input parameter file)" );
+    return 1;
+  }
+  cout<<"Your input-parameter file: "<<argv[1]<<endl;
+  Inp_nishi inp1( argv[1] );
 
 // ############# READ INPUT  ########################################
 /* (1) 
  * 
  */
-   //cout<<endl<<"REPORT> (1) load trajectory \n";
+   cout<<endl<<"------- (1) load --------- \n";
+
+   string infile = inp1.read("INFILE"); 
+   string inprob = inp1.read("INPROB");  
+
+   cout<<"# output"<<endl;
+   string outpmf = inp1.read("OUTPMF");
+
+   cout<<"#  settings"<<endl;
+   int frame = atoi( inp1.read("NUMSTRUCTURE").c_str() );
+
+
+/*  OPEN FILE  
+*/
+  ifstream ifs1(infile.c_str(),ifstream::in);
+
+  if(ifs1.fail()){
+    cerr<<"cannot open file "<<infile<<endl;
+    //exit(1);
+    return 1;
+  }
+
+  float tmp;
+  vector<float> c1, c2, prob;
+  //while(!ifs.eof()){
+  //while(ifs.good()){
+  for(int ii=0;ii<frame;ii++){
+    ifs1 >> tmp;
+    c1.push_back(tmp);
+    ifs1 >> tmp;
+    c2.push_back(tmp);
+    ifs1 >> tmp;
+    prob.push_back(tmp);
+  }
+
+  ifs1.close();
+
+  cout<<"DEBUG: prob.size() = "<<prob.size()<<endl;
 
 
 /* (7) PMF calculation

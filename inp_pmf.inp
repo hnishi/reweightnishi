@@ -2,9 +2,8 @@
 
 # :::::::::   pmf   :::::::::::::::::::::::::::
 # input
-INCOORD  c1c2c3c4str.dat 
-INPOTENE   out_exPotEne.dat 
-INENEPROB  Pc_T300.dat
+INFILE  file_3.dat 
+INPROB  Pc_T300.dat
 
 # output
 OUTPMF out_pmf.dat
