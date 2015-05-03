@@ -169,9 +169,9 @@ int main(int argc, char *argv[]){
 	    && c2[n] > emin + length_bin * i
 	    && c2[n] <= emin + length_bin * (i + 1)     ){
 	       //pmf[j][i] ++ ;
-	       pmf[j][i] = pmf[j][i] + prob2[n] ;
-	       count_pmf ++ ;
-	       normcons = normcons + prob2[n];
+	       pmf[j][i] = pmf[j][i] + prob2[n] ; //counting by probability
+	       count_pmf ++ ; //counting 1 by 1
+	       normcons = normcons + prob2[n]; //normalization constant
 	       //goto NEXT_PMF;
 	    }
          }
