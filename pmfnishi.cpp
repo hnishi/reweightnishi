@@ -142,6 +142,9 @@ int main(int argc, char *argv[]){
  *
  * */
    cout<<endl<<"REPORT> (7) PMF calculation \n";
+   float dcbound1 = atof( inp1.read("DCBOUND1").c_str() );
+   float dcbound2 = atof( inp1.read("DCBOUND2").c_str() );
+
    //string pmfcalculation  = inp1.read("PMFCALCULATION");
    string pmfcalculation  = "YES";
    if( pmfcalculation == "YES"){
@@ -169,9 +172,15 @@ int main(int argc, char *argv[]){
 	    && c2[n] > emin + length_bin * i
 	    && c2[n] <= emin + length_bin * (i + 1)     ){
 	       //pmf[j][i] ++ ;
-	       pmf[j][i] = pmf[j][i] + prob2[n] ; //counting by probability
+	       if( pote[n] < dcbound1 || pote[n] > dcbound2 ){
+	         pmf[j][i] = pmf[j][i] + prob2[n]*2 ; //counting by probability
+	         normcons = normcons + prob2[n]*2; //normalization constant
+	       }
+	       else{
+	         pmf[j][i] = pmf[j][i] + prob2[n] ; //counting by probability
+	         normcons = normcons + prob2[n]; //normalization constant
+	       }
 	       count_pmf ++ ; //counting 1 by 1
-	       normcons = normcons + prob2[n]; //normalization constant
 	       //goto NEXT_PMF;
 	    }
          }

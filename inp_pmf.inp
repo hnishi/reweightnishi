@@ -13,6 +13,10 @@ OUTCHECK out_check.dat  # NO or filename, num. of structures in each energey bin
 #  settings
 NUMSTRUCTURE 150  # num. of structures
 
+#  double count because of virtual states
+DCBOUND1 -60000  # for lower virtual states
+DCBOUND2 -41000  # for upper virtual states
+
 
 # :::::::::   PMF Calculation   :::::::::::::::::::::::::::::::::::::::
 TEMPERATURE 300  # arbitrary temperature
