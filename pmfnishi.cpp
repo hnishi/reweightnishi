@@ -183,7 +183,8 @@ int main(int argc, char *argv[]){
    cout<<"Range: "<<emin<<" to "<<emin+length_bin*num_bin<<endl;
    cout<<"Num of Partitions = NUMBIN*NUMBIN = "<<num_bin*num_bin<<endl;
 
-   float pmf[num_bin][num_bin];
+   //float pmf[num_bin][num_bin];
+   double pmf[num_bin][num_bin];
    //long double pmf[num_bin][num_bin];
    for(int i=0;i<num_bin;i++){  //initialize array
       for(int j=0;j<num_bin;j++){
@@ -287,13 +288,13 @@ int main(int argc, char *argv[]){
    }
    for(int i=0;i<num_bin;i++){
       for(int j=0;j<num_bin;j++){
-         if( pmf[j][i] == 0 ){
+         if( pmf[j][i] == 0L ){
          //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 0.0 );}else{
-         fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 100.0 );
+         fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 1000.0 );
          }
          else{
          //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - max_pmf) / JOULE_CALORIE /1000 );
-         fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000 );
+         fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
          }
       }
       fprintf(fout,"\n");
