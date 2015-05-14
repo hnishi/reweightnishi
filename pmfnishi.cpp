@@ -40,9 +40,11 @@ int main(int argc, char *argv[]){
 
 /*  OPEN FILE  
 */
+  //float tmp;
   float tmp;
 
-  ifstream ifs1(infile.c_str(),ifstream::in);
+  ifstream ifs1(infile.c_str());
+  //ifstream ifs1(infile.c_str(),ifstream::in);
   if(ifs1.fail()){
     cerr<<"cannot open file "<<infile<<endl;
     //exit(1);
@@ -67,24 +69,36 @@ int main(int argc, char *argv[]){
   cout<<"DEBUG: pote[pote.size() -1] = "<<pote[pote.size() -1]<<endl;
 
 
-  ifstream ifs2(inprob.c_str(),ifstream::in);
-  if(ifs2.fail()){
+  ifstream test(inprob.c_str());
+  //ifstream test(inprob.c_str(),ifstream::in);
+  if(test.fail()){
     cerr<<"cannot open file "<<inprob<<endl;
     //exit(1);
     return 1;
   }
 
   vector<float> ene_prob, prob;
-    ifs2 >> tmp;  //why outside of while-loop? because of ifs.eof 
-  while(!ifs2.eof()){
-  //while(ifs2.good()){
+    //test.clear();
+    //test.seekg(2);
+    test >> tmp;  //why outside of while-loop? because of ifs.eof 
+    //cerr<<"DEBUG: tmp of ene_prob = "<<tmp<<endl;
+  //for(int ii=0;ii<2131;ii++){
+  //while( true ){
+  while( ! test.eof() ){
+  //while(test.good()){
+    //test >> tmp;
+    //if( test.eof() ) break;
+    //cerr<<"DEBUG: tmp of ene_prob = "<<tmp<<endl;
     ene_prob.push_back(tmp);
-    ifs2 >> tmp;
+    test >> tmp;
     prob.push_back(tmp);
-    ifs2 >> tmp;
+    test >> tmp;
   }
 
-  ifs2.close();
+  test.close();
+
+  cout<<"DEBUG: ene_prob.size() = "<<ene_prob.size()<<endl;
+  cout<<" reading input section end "<<endl;
 
   //cout<<"DEBUG: prob.size() = "<<prob.size()<<endl;
   //cout<<"DEBUG: prob[prob.size() -1] = "<<prob[prob.size() -1]<<endl;
@@ -102,17 +116,29 @@ int main(int argc, char *argv[]){
    }
    vector<float> prob2;
    for(int ii=0;ii<frame;ii++){
-      for(unsigned int jj=0;jj<ene_prob.size();jj++){
+      int flag_1 = 0;
+      unsigned int jj = 0;
+      for(jj=0;jj<ene_prob.size();jj++){
          if( pote[ii] < ene_prob[jj] ){
 	    prob2.push_back( prob[jj] );
 	    check_flat[jj] ++ ;
+            flag_1 = 1;
 	    break;
 	 }
+      }
+      //if(  jj==ene_prob.size() ){
+      if( pote[ii] >= ene_prob[ene_prob.size() - 1]){
+      //if( flag_1 == 0 ){
+         cout<<"WARNING: pote["<<ii<<"] = "<<pote[ii]<<endl;
+	 prob2.push_back( prob[ jj - 1 ] );
+	 check_flat[jj - 1 ] ++ ;
       }
    }
    if( prob2.size() != frame ){
       cout<<"WARNING: assignment of probability failed \n";
       cout<<"num of assigned = "<<prob2.size()<<endl;
+      cout<<"num of structures = "<<frame<<endl;
+      return 1;
    }
    else{
       cout<<"assignment of probability was ended successfully"<<endl;
@@ -165,7 +191,9 @@ int main(int argc, char *argv[]){
    }
    int count_pmf = 0; float normcons = 0;
    for(unsigned int n=0;n<frame;n++){ //count
+      int flag_2 = 0;
       for(int i=0;i<num_bin;i++){
+         bool flag_3 = false;
          for(int j=0;j<num_bin;j++){
             if(c1[n] > emin + length_bin * j 
  	    && c1[n] <= emin + length_bin * (j + 1) 
@@ -182,8 +210,16 @@ int main(int argc, char *argv[]){
 	       }
 	       count_pmf ++ ; //counting 1 by 1
 	       //goto NEXT_PMF;
+               flag_3 = true;
+               flag_2 = 1;
+               break;
 	    }
          }
+         if( flag_3 ) break;
+      }
+      if( flag_2 == 0 ){
+         cout<<"WARNING: structure "<<n<<" was not assigned into any bin of pmf\n";
+         cout<<"c1[n] = "<<c1[n]<<", c2[n] = "<<c2[n]<<endl;
       }
 
 //NEXT_PMF:
