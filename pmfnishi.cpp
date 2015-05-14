@@ -301,9 +301,23 @@ int main(int argc, char *argv[]){
    }
    fclose( fout );
    cout<<"output "<<outpmf<<endl;
-   }
 //end:
 
+/*  structure list
+*/
+   cout<<"\n\nWrite structure-number of minimum PMF bin \n";
+   for(unsigned int n=0;n<frame;n++){ //count
+            if(c1[n] >  min_pmf_c[0] - length_bin / 2 
+ 	    && c1[n] <= min_pmf_c[0] + length_bin / 2 
+	    && c2[n] >  min_pmf_c[1] - length_bin / 2
+	    && c2[n] <= min_pmf_c[1] + length_bin / 2    ){
+	       cout<<n+1<<endl;
+            }
+   }
+
 // END
+   }
+   cout<<"\n\nit took "<<(float)clock()/CLOCKS_PER_SEC<<" sec of CPU to execute this program"<<endl;
+   return 0;
         return 0;
 }

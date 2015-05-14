@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm pmfnishi.exe
 g++ pmfnishi.cpp inpnishi.cpp nlib.h -o pmfnishi.exe
 
 ./pmfnishi.exe inp_pmf.inp > res3.log
