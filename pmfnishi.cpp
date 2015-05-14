@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 /*  OPEN FILE  
 */
   //float tmp;
-  float tmp;
+  long double tmp;
 
   ifstream ifs1(infile.c_str());
   //ifstream ifs1(infile.c_str(),ifstream::in);
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
     return 1;
   }
 
-  vector<float> ene_prob, prob;
+  vector<long double> ene_prob, prob;
     //test.clear();
     //test.seekg(2);
     test >> tmp;  //why outside of while-loop? because of ifs.eof 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
    for(unsigned int i=0;i<ene_prob.size();i++){
       check_flat[i] = 0; //initializing by zero
    }
-   vector<float> prob2;
+   vector<long double> prob2;
    for(int ii=0;ii<frame;ii++){
       int flag_1 = 0;
       unsigned int jj = 0;
@@ -183,13 +183,14 @@ int main(int argc, char *argv[]){
    cout<<"Range: "<<emin<<" to "<<emin+length_bin*num_bin<<endl;
    cout<<"Num of Partitions = NUMBIN*NUMBIN = "<<num_bin*num_bin<<endl;
 
-   double pmf[num_bin][num_bin];
+   float pmf[num_bin][num_bin];
+   //long double pmf[num_bin][num_bin];
    for(int i=0;i<num_bin;i++){  //initialize array
       for(int j=0;j<num_bin;j++){
          pmf[j][i] = 0;
       }
    }
-   int count_pmf = 0; float normcons = 0;
+   int count_pmf = 0; long double normcons = 0;
    for(unsigned int n=0;n<frame;n++){ //count
       int flag_2 = 0;
       for(int i=0;i<num_bin;i++){
@@ -221,10 +222,10 @@ int main(int argc, char *argv[]){
          cout<<"WARNING: structure "<<n<<" was not assigned into any bin of pmf\n";
          cout<<"c1[n] = "<<c1[n]<<", c2[n] = "<<c2[n]<<endl;
       }
-
-//NEXT_PMF:
-   //continue;
    }
+
+   cout<<"Normaliztion constant = "<<normcons<<endl;
+
    cout<<"count_pmf / frame = "<<count_pmf<<" / "<<frame<<endl;
    if( count_pmf != (int)frame )cout<<"WARNING: count_pmf != frame; "<<count_pmf<<" != "<<frame<<endl;
    double min_pmf = 999999, max_pmf = -999999; 
