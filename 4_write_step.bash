@@ -1,32 +1,35 @@
 #!/bin/bash
 
-mkdir list_stru
+################################################################################
+# function : 4_bash
+# description :
+#   
+#
+################################################################################
+file="stru.dat"
+ex_writestep="../writestep/a.out"
 
-echo 74 > aaa.inp
-../writestep/a.out mdx.crd mdx.in.pdb < aaa.inp > aaa.log
-mv out_step.pdb list_stru/74.pdb
+dir=`pwd`
+#iend=`wc $file | cut -d' ' -f-10`
+iend=`wc -l $file | cut -d' ' -f 1`
+mkdir $dir/list_stru
 
-rm aaa.inp
+echo $iend
 
+#echo 74 > aaa.inp
+#rm aaa.inp
+ 
+for (( i=1; i<=$iend; i++ ))
+do
+   tail -$i $file > aaa
+   num=`head -1 aaa` 
+   echo $num > bbb
+   echo $num 
+   $ex_writestep mdx.crd mdx.in.pdb < bbb > bbb.log
+   mv out_step.pdb list_stru/$num.pdb
+done
 
-74
-76
-88
-97
-101
-103
-104
-105
-106
-107
-110
-111
-119
-125
-128
-135
-137
-138
-143
-150
+rm aaa bbb bbb.log
 
+echo end
+#ls $dir/list_stru
