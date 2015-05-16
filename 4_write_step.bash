@@ -2,8 +2,8 @@
 
 ################################################################################
 # function : 4_bash
-# description :
-#   
+# description : 
+#    prepare file (stru.dat) which is a list including all structure number you want
 #
 ################################################################################
 file="stru.dat"
