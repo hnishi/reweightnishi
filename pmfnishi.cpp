@@ -197,10 +197,10 @@ int main(int argc, char *argv[]){
       for(int i=0;i<num_bin;i++){
          bool flag_3 = false;
          for(int j=0;j<num_bin;j++){
-            if(c1[n] > emin + length_bin * j 
- 	    && c1[n] <= emin + length_bin * (j + 1) 
-	    && c2[n] > emin + length_bin * i
-	    && c2[n] <= emin + length_bin * (i + 1)     ){
+            if(c1[n] >= emin + length_bin * j 
+ 	    && c1[n] <  emin + length_bin * (j + 1) 
+	    && c2[n] >= emin + length_bin * i
+	    && c2[n] <  emin + length_bin * (i + 1)     ){
 	       //pmf[j][i] ++ ;
 	       if( pote[n] < dcbound1 || pote[n] > dcbound2 ){
 	         pmf[j][i] = pmf[j][i] + prob2[n]*2 ; //counting by probability
