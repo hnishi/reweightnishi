@@ -1,18 +1,20 @@
 #!/bin/bash
 
 ################################################################################
-# function : 4_bash
+# function : 6_bash
 # description : 
 #    prepare file (stru.dat) which is a list including all structure number you want
 #
 ################################################################################
-file="stru.dat"
+file="out_list.dat"
 ex_writestep="../writestep/a.out"
+outdir="list_stru_ref"
+
 
 dir=`pwd`
 #iend=`wc $file | cut -d' ' -f-10`
 iend=`wc -l $file | cut -d' ' -f 1`
-mkdir $dir/list_stru
+mkdir $dir/$outdir
 
 echo total number of structures = $iend
 
@@ -27,10 +29,10 @@ do
    echo $num 
    #tail -$i $file | head -1 | tee bbb  # "tee" command do both echo and make file
    $ex_writestep mdx.crd mdx.in.pdb < bbb > bbb.log
-   mv out_step.pdb list_stru/$num.pdb
+   mv out_step.pdb $outdir/$num.pdb
 done
 
 rm aaa bbb bbb.log
 
 echo end
-#ls $dir/list_stru
+ls $outdir

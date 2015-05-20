@@ -12,14 +12,12 @@ print fff
 #settings
 
 #load('/work1/hnishi/3rdTrial/crystal.pdb')
-#refpdb = "crystal"
-
-# 
+load('../crystal_1st_prot.pdb')
+refpdb = "crystal"
 
 map(load,glob.glob('*.pdb'))
 cmd.remove("resn WAT | hydrogen | resn CIP+CIM+NME")
 
-#align_nishi2 = lambda a: align(a,fff[0])
 
 """
 def align_nishi(aaa):
@@ -27,10 +25,15 @@ def align_nishi(aaa):
 	return
 map(align_nishi,fff[1:])
 """
+
+
+#align_nishi2 = lambda a: align(a,fff[0])
 #map(align_nishi2,fff[1:])
 #map(lambda a: align(a,fff[0]),fff[1:])
 #map(lambda a: align(a,"crystal"),fff[0:])
+
 map(lambda a: align(a,refpdb),fff[0:])
+
 
 """
 for i in range(len(fff)-1):
@@ -38,6 +41,8 @@ for i in range(len(fff)-1):
 	#align(fff[0],fff[i+1])
 	align(fff[i+1],fff[0])
 """
+
+
 cmd.hide("everything")
 cmd.show("ribbon")
 #cmd.select("h3","i. 210-222")
@@ -57,6 +62,8 @@ set_view ("\
     41.228359222,   75.055503845,    0.000000000 ")
 ### cut above here and paste into script ###
 """
+
+
 # for superposition to crystal structure
 ### cut below here and paste into script ###
 set_view ("\
@@ -68,9 +75,10 @@ set_view ("\
     63.152069092,   97.049507141,  -20.000000000 ")
 ### cut above here and paste into script ###
 
-#cmd.ray()
-#cmd.png("all.png")
-#save("all.pse")
+
+cmd.ray()
+cmd.png("all.png")
+save("all.pse")
 
 #quit()
 	
