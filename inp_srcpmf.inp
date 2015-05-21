@@ -1,0 +1,9 @@
+
+INPPMF  inp_pmf.inp
+INPEXP  inp_exPotEne.inp
+
+#-3.500      -0.500       0.626 kcal #wanted 
+COORDC1  -3.5
+COORDC2  -0.5
+
+OUTFILE out_list.dat  #stru.dat 
