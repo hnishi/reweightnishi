@@ -40,6 +40,12 @@ int main(int argc, char *argv[]){
    cout<<"#  settings"<<endl;
    int frame = atoi( inp1.read("NUMSTRUCTURE").c_str() );
 
+/* DEFINITION OF VARIABLES
+*/
+   vector<long double> prob2; //probability of each data
+   vector<long double> ene_prob, prob; //from inprob (Pc) Probability distribution function along potential energy
+   int outlier = 0;  //num of data out of energy range
+
 
 /*  OPEN FILE  
 */
@@ -74,13 +80,15 @@ int main(int argc, char *argv[]){
 
   ifstream test(inprob.c_str());
   //ifstream test(inprob.c_str(),ifstream::in);
+
+  if(inprob == "NO") goto flag_noprob;
+  
   if(test.fail()){
     cerr<<"cannot open file "<<inprob<<endl;
     //exit(1);
     return 1;
   }
 
-  vector<long double> ene_prob, prob;
     //test.clear();
     //test.seekg(2);
     test >> tmp;  //why outside of while-loop? because of ifs.eof 
@@ -117,8 +125,6 @@ int main(int argc, char *argv[]){
    for(unsigned int i=0;i<ene_prob.size();i++){
       check_flat[i] = 0; //initializing by zero
    }
-   vector<long double> prob2;
-   int outlier = 0;
    for(int ii=0;ii<frame;ii++){
       int flag_1 = 0;
       unsigned int jj = 0;
@@ -152,6 +158,13 @@ int main(int argc, char *argv[]){
    else{
       cout<<"assignment of probability was ended successfully"<<endl;
       cout<<"num of outliers = "<<outlier<<endl;
+   }
+
+flag_noprob:
+   if(inprob == "NO"){
+      for(int ii=0;ii<frame;ii++){
+         prob2.push_back(1);
+      }
    }
 /*  OUTPUT FILE
 */

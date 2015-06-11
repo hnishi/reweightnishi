@@ -3,7 +3,8 @@
 # :::::::::   pmf   :::::::::::::::::::::::::::
 # input
 INFILE  file_3.dat  # column 1, 2: coordinates of PCA, column 3: potential energy
-INPROB  Pc_T300.dat  # probability distribution data (column 1: potential energy, column 2: probability) 
+#INPROB  Pc_T300.dat  # probability distribution data (column 1: potential energy, column 2: probability) 
+INPROB  NO  # "NO" means all data will be assigned to probability 1
 
 # output 
 OUTPROB out_prob.dat
@@ -14,8 +15,8 @@ OUTCHECK out_check.dat  # NO or filename, num. of structures in each energey bin
 NUMSTRUCTURE 150  # num. of structures
 
 #  double count because of virtual states
-DCBOUND1 -60000  # for lower virtual states
-DCBOUND2 -41000  # for upper virtual states
+DCBOUND1 -90000  # for lower virtual states
+DCBOUND2  41000  # for upper virtual states
 
 
 # :::::::::   PMF Calculation   :::::::::::::::::::::::::::::::::::::::
