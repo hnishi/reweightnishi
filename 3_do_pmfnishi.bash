@@ -7,4 +7,5 @@ g++ pmfnishi.cpp inpnishi.cpp nlib.h -o pmfnishi.exe
 
 paste file_3.dat out_prob.dat > prob.dat
 
+cat res3.log
 

@@ -1,3 +1,6 @@
+/* version v2  20150611
+*/
+
 #include"nlib.h"
 
 // constant values
@@ -115,9 +118,15 @@ int main(int argc, char *argv[]){
       check_flat[i] = 0; //initializing by zero
    }
    vector<long double> prob2;
+   int outlier = 0;
    for(int ii=0;ii<frame;ii++){
       int flag_1 = 0;
       unsigned int jj = 0;
+      if( pote[ii] < ene_prob[0] || pote[ii] >= ene_prob[ene_prob.size() - 1]){ 
+         prob2.push_back( 0 );
+	 outlier ++ ;
+	 break;
+      }
       for(jj=0;jj<ene_prob.size();jj++){
          if( pote[ii] < ene_prob[jj] ){
 	    prob2.push_back( prob[jj] );
@@ -126,13 +135,13 @@ int main(int argc, char *argv[]){
 	    break;
 	 }
       }
-      //if(  jj==ene_prob.size() ){
-      if( pote[ii] >= ene_prob[ene_prob.size() - 1]){
-      //if( flag_1 == 0 ){
-         cout<<"WARNING: pote["<<ii<<"] = "<<pote[ii]<<endl;
-	 prob2.push_back( prob[ jj - 1 ] );
-	 check_flat[jj - 1 ] ++ ;
-      }
+            //if(  jj==ene_prob.size() ){
+      //if( pote[ii] >= ene_prob[ene_prob.size() - 1]){
+            //if( flag_1 == 0 ){
+         //cout<<"WARNING: pote["<<ii<<"] = "<<pote[ii]<<endl;
+	 //prob2.push_back( prob[ jj - 1 ] );
+	 //check_flat[jj - 1 ] ++ ;
+      //}
    }
    if( prob2.size() != frame ){
       cout<<"WARNING: assignment of probability failed \n";
@@ -142,6 +151,7 @@ int main(int argc, char *argv[]){
    }
    else{
       cout<<"assignment of probability was ended successfully"<<endl;
+      cout<<"num of outliers = "<<outlier<<endl;
    }
 /*  OUTPUT FILE
 */
@@ -192,6 +202,7 @@ int main(int argc, char *argv[]){
       }
    }
    int count_pmf = 0; long double normcons = 0;
+   int count_valid = 0;
    for(unsigned int n=0;n<frame;n++){ //count
       int flag_2 = 0;
       for(int i=0;i<num_bin;i++){
@@ -202,6 +213,9 @@ int main(int argc, char *argv[]){
 	    && c2[n] >= emin + length_bin * i
 	    && c2[n] <  emin + length_bin * (i + 1)     ){
 	       //pmf[j][i] ++ ;
+	       if( prob2[n] > 0 ){
+	          count_valid ++ ;
+	       }
 	       if( pote[n] < dcbound1 || pote[n] > dcbound2 ){
 	         pmf[j][i] = pmf[j][i] + prob2[n]*2 ; //counting by probability
 	         normcons = normcons + prob2[n]*2; //normalization constant
@@ -226,6 +240,7 @@ int main(int argc, char *argv[]){
    }
 
    cout<<"Normaliztion constant = "<<normcons<<endl;
+   cout<<"The number of data whose probability is larger than zero = "<<count_valid<<endl;
 
    cout<<"count_pmf / frame = "<<count_pmf<<" / "<<frame<<endl;
    if( count_pmf != (int)frame )cout<<"WARNING: count_pmf != frame; "<<count_pmf<<" != "<<frame<<endl;
@@ -269,10 +284,14 @@ int main(int argc, char *argv[]){
          }
       }
    }
-   min_pmf_c[0] = emin + min_pmf_n[0] * length_bin + length_bin / 2;
+   /*min_pmf_c[0] = emin + min_pmf_n[0] * length_bin + length_bin / 2;
    min_pmf_c[1] = emin + min_pmf_n[1] * length_bin + length_bin / 2;
    max_pmf_c[0] = emin + max_pmf_n[0] * length_bin + length_bin / 2;
-   max_pmf_c[1] = emin + max_pmf_n[1] * length_bin + length_bin / 2;
+   max_pmf_c[1] = emin + max_pmf_n[1] * length_bin + length_bin / 2;*/
+   min_pmf_c[0] = emin + min_pmf_n[0] * length_bin ;
+   min_pmf_c[1] = emin + min_pmf_n[1] * length_bin ;
+   max_pmf_c[0] = emin + max_pmf_n[0] * length_bin ;
+   max_pmf_c[1] = emin + max_pmf_n[1] * length_bin ;
    
    cout<<"Maximum PMF = "<<max_pmf-min_pmf<<" (J/mol) = "<<(max_pmf-min_pmf)/JOULE_CALORIE/1000<<" (kcal/mol)\n";
    cout<<"Minimum PMF = "<<min_pmf-min_pmf<<" (J/mol) = "<<(min_pmf-min_pmf)/JOULE_CALORIE/1000<<" (kcal/mol)\n";
@@ -289,12 +308,12 @@ int main(int argc, char *argv[]){
    for(int i=0;i<num_bin;i++){
       for(int j=0;j<num_bin;j++){
          if( pmf[j][i] == 0L ){
-         //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 0.0 );}else{
-         fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 1000.0 );
+         fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j , emin + length_bin * i , 1000.0 );
+         //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 1000.0 );
          }
          else{
-         //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - max_pmf) / JOULE_CALORIE /1000 );
-         fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
+         fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j , emin + length_bin * i , (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
+         //fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
          }
       }
       fprintf(fout,"\n");
@@ -307,11 +326,16 @@ int main(int argc, char *argv[]){
 */
    cout<<"\n\nWrite structure-number of minimum PMF bin \n";
    for(unsigned int n=0;n<frame;n++){ //count
-            if(c1[n] >  min_pmf_c[0] - length_bin / 2 
+            /*if(c1[n] >  min_pmf_c[0] - length_bin / 2 
  	    && c1[n] <= min_pmf_c[0] + length_bin / 2 
 	    && c2[n] >  min_pmf_c[1] - length_bin / 2
-	    && c2[n] <= min_pmf_c[1] + length_bin / 2    ){
-	       cout<<n+1<<endl;
+	    && c2[n] <= min_pmf_c[1] + length_bin / 2    ){*/
+            if(c1[n] >  min_pmf_c[0]  
+ 	    && c1[n] <= min_pmf_c[0] + length_bin 
+	    && c2[n] >  min_pmf_c[1] 
+	    && c2[n] <= min_pmf_c[1] + length_bin
+	    && prob2[n] > 0                       ){
+	       cout<<n+1<<"   "<<pote[n]<<"   "<<prob2[n]<<endl;
             }
    }
 
