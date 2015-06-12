@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
       if( pote[ii] < ene_prob[0] || pote[ii] >= ene_prob[ene_prob.size() - 1]){ 
          prob2.push_back( 0 );
 	 outlier ++ ;
-	 break;
+	 continue;
       }
       for(jj=0;jj<ene_prob.size();jj++){
          if( pote[ii] < ene_prob[jj] ){
