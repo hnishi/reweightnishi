@@ -1,4 +1,4 @@
-/* version v2.1  20150611
+/* version v2.2  20150828
 */
 
 #include"nlib.h"
