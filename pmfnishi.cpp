@@ -82,27 +82,29 @@ int main(int argc, char *argv[]){
   cout<<"DEBUG: pote.size() = "<<pote.size()<<endl;
   cout<<"DEBUG: pote[pote.size() -1] = "<<pote[pote.size() -1]<<endl;
 
-
+/* (2)  assignment of probability
+ *
+ * */
+// read file 
   ifstream test(inprob.c_str());
   //ifstream test(inprob.c_str(),ifstream::in);
-
-  if(inprob == "NO") goto flag_noprob;
-  
+  if(inprob == "NO") goto flag_noprob;  //assign probability
+{ // goto flag_noprob 
   if(test.fail()){
     cerr<<"cannot open file "<<inprob<<endl;
     //exit(1);
     return 1;
   }
 
-    //test.clear();
-    //test.seekg(2);
-    test >> tmp;  //why outside of while-loop? because of ifs.eof 
-    //cerr<<"DEBUG: tmp of ene_prob = "<<tmp<<endl;
+  //test.clear();
+  //test.seekg(2);
+  test >> tmp;  //why outside of while-loop? because of ifs.eof 
+  //cerr<<"DEBUG: tmp of ene_prob = "<<tmp<<endl;
   //for(int ii=0;ii<2131;ii++){
   //while( true ){
   while( ! test.eof() ){
   //while(test.good()){
-    //test >> tmp;
+  //test >> tmp;
     //if( test.eof() ) break;
     //cerr<<"DEBUG: tmp of ene_prob = "<<tmp<<endl;
     ene_prob.push_back(tmp);
@@ -121,9 +123,35 @@ int main(int argc, char *argv[]){
   //cout<<"DEBUG: ene_prob.size() = "<<ene_prob.size()<<endl;
   //cout<<"DEBUG: ene_prob[ene_prob.size() -1] = "<<ene_prob[prob.size() -1]<<endl;
 
-/* (2)  assignment of probability
- *
- * */
+//ttp_v_mcmd input
+  int vst;
+  vector<float> tmpvec;
+  ifstream ttpvinp(inttpin.c_str()); //ttp_v_mcmd.inp
+  if(ttpvinp.fail()){
+    cerr<<"cannot open file "<<inttpin<<endl;
+    return 1;
+  }
+  while( ttpvinp ){
+    string tmpstr;
+    ttpvinp >> tmpstr;
+    //cout<< tmpstr<<endl;
+    if( tmpstr[0] == ';' ){
+      ttpvinp.ignore(100, '\n');
+    }
+    else{
+      tmpvec.push_back( atof( tmpstr.c_str() ) );
+    }
+  }
+  for(unsigned int i;i<tmpvec.size();i++){
+    cout<<tmpvec[i]<<endl;
+  }
+    
+/*ifstream ttpvinp(inttpin.c_str()); //ttp_v_mcmd.inp
+   string inttpout = inp1.read("INTTPOUT"); //ttp_v_mcmd.out
+   string dirttpout = inp1.read("DIRTTPOUT"); // md24/no?/
+   int numrun = atoi( inp1.read("NUMRUN").c_str() );
+*/
+//
    cout<<endl<<"------- (2) assignment of probability --------- \n";
    
    int check_flat[ene_prob.size()];
@@ -165,6 +193,18 @@ int main(int argc, char *argv[]){
       cout<<"num of outliers = "<<outlier<<endl;
    }
 
+  string outcheck = inp1.read("OUTCHECK").c_str() ;
+  if( outcheck != "NO" ){
+     ofstream ofs2; //check_flat
+     //ofs2.open( inp1.read("OUTCHECK").c_str() );
+     ofs2.open( outcheck.c_str() );
+     for(unsigned int i = 0;i<ene_prob.size();i++){
+        ofs2<<ene_prob[i]<<"    "<<check_flat[i]<<"\n";
+     }
+  ofs2.close();
+  cout<<endl<<outcheck<<" was output successfully"<<endl;
+  }
+} // end of goto flag_noprob 
 flag_noprob:
    if(inprob == "NO"){
       for(int ii=0;ii<frame;ii++){
@@ -180,17 +220,6 @@ flag_noprob:
   }
   ofs1.close();
 
-  string outcheck = inp1.read("OUTCHECK").c_str() ;
-  if( outcheck != "NO" ){
-     ofstream ofs2; //check_flat
-     //ofs2.open( inp1.read("OUTCHECK").c_str() );
-     ofs2.open( outcheck.c_str() );
-     for(unsigned int i = 0;i<ene_prob.size();i++){
-        ofs2<<ene_prob[i]<<"    "<<check_flat[i]<<"\n";
-     }
-  ofs2.close();
-  cout<<endl<<outcheck<<" was output successfully"<<endl;
-  }
 
 /* (7) PMF calculation
  *
