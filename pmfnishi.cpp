@@ -40,6 +40,11 @@ int main(int argc, char *argv[]){
    cout<<"#  settings"<<endl;
    int frame = atoi( inp1.read("NUMSTRUCTURE").c_str() );
 
+   string inttpin = inp1.read("INTTPIN"); //ttp_v_mcmd.inp
+   string inttpout = inp1.read("INTTPOUT"); //ttp_v_mcmd.out
+   string dirttpout = inp1.read("DIRTTPOUT"); // md24/no?/
+   int numrun = atoi( inp1.read("NUMRUN").c_str() );
+
 /* DEFINITION OF VARIABLES
 */
    vector<long double> prob2; //probability of each data
