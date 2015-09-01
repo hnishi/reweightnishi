@@ -1,0 +1,37 @@
+# pmf.cpp input-parameter file
+
+### :::::::::   pmf   :::::::::::::::::::::::::::
+### input
+INFILE  file_3.dat  # column 1, 2: coordinates of PCA, column 3: potential energy
+
+
+### ttp_v_mcmd settings
+#INPROB:probability distribution data (column 1: potential energy, column 2: probability) 
+#INPROB  NO  # "NO" means all data will be assigned to probability 1
+INPROB  Pc_T300.dat 
+INTTPIN  md24/no1/ttp_v_mcmd.inp
+INTTPOUT  md24/all_ttp_v_mcmd.out
+INTERVAL  1000  #how many steps per structure
+
+### output 
+OUTPROB out_prob.dat
+OUTPMF out_pmf.dat 
+OUTCHECK out_check.dat  # NO or filename, num. of structures in each energey bin
+
+### settings
+NUMSTRUCTURE 192000 # num. of structures
+#NUMSTRUCTURE 294000 # num. of structures
+
+###  double count because of virtual states
+# for ama2 
+DCBOUND1 -60630   -62760  # for lower virtual states
+DCBOUND2 -49980   -41460  # for upper virtual states
+
+### :::::::::   PMF Calculation   :::::::::::::::::::::::::::::::::::::::
+TEMPERATURE 300  # arbitrary temperature
+BINSIZE 0.4  # bin size of pmf calculation
+MINCOORD -15  # lower bound of c1 and c2, PCA coordinates
+NUMBIN 75   # num. of bins
+
+### ::: 
+
