@@ -1,4 +1,4 @@
-/* version v2.2  20150828
+/* version v3.0  20150901
 */
 
 #include"nlib.h"
@@ -40,10 +40,6 @@ int main(int argc, char *argv[]){
    cout<<"#  settings"<<endl;
    int frame = atoi( inp1.read("NUMSTRUCTURE").c_str() );
 
-   string inttpin = inp1.read("INTTPIN"); //ttp_v_mcmd.inp
-   string inttpout = inp1.read("INTTPOUT"); //ttp_v_mcmd.out
-   string dirttpout = inp1.read("DIRTTPOUT"); // md24/no?/
-   int numrun = atoi( inp1.read("NUMRUN").c_str() );
 
 /* DEFINITION OF VARIABLES
 */
@@ -79,8 +75,8 @@ int main(int argc, char *argv[]){
 
   ifs1.close();
 
-  cout<<"DEBUG: pote.size() = "<<pote.size()<<endl;
-  cout<<"DEBUG: pote[pote.size() -1] = "<<pote[pote.size() -1]<<endl;
+  //cout<<"DEBUG: pote.size() = "<<pote.size()<<endl;
+  //cout<<"DEBUG: pote[pote.size() -1] = "<<pote[pote.size() -1]<<endl;
 
 /* (2)  assignment of probability
  *
@@ -115,7 +111,7 @@ int main(int argc, char *argv[]){
 
   test.close();
 
-  cout<<"DEBUG: ene_prob.size() = "<<ene_prob.size()<<endl;
+  //cout<<"DEBUG: ene_prob.size() = "<<ene_prob.size()<<endl;
   cout<<" reading input section end "<<endl;
 
   //cout<<"DEBUG: prob.size() = "<<prob.size()<<endl;
@@ -124,10 +120,13 @@ int main(int argc, char *argv[]){
   //cout<<"DEBUG: ene_prob[ene_prob.size() -1] = "<<ene_prob[prob.size() -1]<<endl;
 
 //ttp_v_mcmd input
-  int vst;
+   string inttpin = inp1.read("INTTPIN"); //ttp_v_mcmd.inp
+   string inttpout = inp1.read("INTTPOUT"); //ttp_v_mcmd.out
+   int interval = atoi( inp1.read("INTERVAL").c_str() );
+
   vector<float> tmpvec;
   ifstream ttpvinp(inttpin.c_str()); //ttp_v_mcmd.inp
-  if(ttpvinp.fail()){
+  if( ttpvinp.fail() ){
     cerr<<"cannot open file "<<inttpin<<endl;
     return 1;
   }
@@ -142,15 +141,39 @@ int main(int argc, char *argv[]){
       tmpvec.push_back( atof( tmpstr.c_str() ) );
     }
   }
-  for(unsigned int i;i<tmpvec.size();i++){
+  ttpvinp.close();
+  /*for(unsigned int i;i<tmpvec.size();i++){
     cout<<tmpvec[i]<<endl;
+  }*/
+  int vst = tmpvec[0];
+  int trans = tmpvec[1]; 
+  vector<float> ttplimit;
+  for(int i=1;i<=vst;i++){
+    ttplimit.push_back( tmpvec[4*i-2] );
+    ttplimit.push_back( tmpvec[4*i-1] );
   }
+  /*for(unsigned int i;i<ttplimit.size();i++){
+    cout<<ttplimit[i]<<endl;
+  }*/
+  tmpvec.clear(); 
     
-/*ifstream ttpvinp(inttpin.c_str()); //ttp_v_mcmd.inp
-   string inttpout = inp1.read("INTTPOUT"); //ttp_v_mcmd.out
-   string dirttpout = inp1.read("DIRTTPOUT"); // md24/no?/
-   int numrun = atoi( inp1.read("NUMRUN").c_str() );
-*/
+  vector<int> currvst;
+  ifstream ttpvout(inttpout.c_str()); //ttp_v_mcmd.out
+  if( ttpvout.fail() ){
+    cerr<<"cannot open file "<<inttpout<<endl;
+    return 1;
+  }
+  while( ttpvout ){
+    ttpvout >> tmp;
+    ttpvout >> tmp;
+    //cout<<tmp<<endl;
+    currvst.push_back( tmp ); 
+  }  
+  /*for(unsigned int i;i<currvst.size();i++){
+    cout<<currvst[i]<<endl;
+  }*/
+  ttpvout.close();
+
 //
    cout<<endl<<"------- (2) assignment of probability --------- \n";
    
@@ -158,21 +181,35 @@ int main(int argc, char *argv[]){
    for(unsigned int i=0;i<ene_prob.size();i++){
       check_flat[i] = 0; //initializing by zero
    }
-   for(int ii=0;ii<frame;ii++){
+   //trans/interval
+   int iii=0;
+   for(int ii=0;ii<frame;ii++){ 
       int flag_1 = 0;
       unsigned int jj = 0;
-      if( pote[ii] < ene_prob[0] || pote[ii] >= ene_prob[ene_prob.size() - 1]){ 
+      int vstnum = currvst[int(ii/20)];
+      //cout<<int(ii/20)<<" "<<vstnum<<endl;
+      if( pote[ii] < ttplimit[2*vstnum-2] || pote[ii]>=ttplimit[2*vstnum-1] ){
+         prob2.push_back( 0 );
+         outlier ++ ;
+         continue;
+      }
+      else if( pote[ii] < ene_prob[0] || pote[ii] >= ene_prob[ene_prob.size() - 1]){ 
          prob2.push_back( 0 );
 	 outlier ++ ;
 	 continue;
       }
+      else{
       for(jj=0;jj<ene_prob.size();jj++){
          if( pote[ii] < ene_prob[jj] ){
 	    prob2.push_back( prob[jj] );
+            if( vstnum == 1 || vstnum == vst ){
+              check_flat[jj] ++ ;
+            }
 	    check_flat[jj] ++ ;
             flag_1 = 1;
 	    break;
 	 }
+      }
       }
             //if(  jj==ene_prob.size() ){
       //if( pote[ii] >= ene_prob[ene_prob.size() - 1]){
@@ -183,7 +220,7 @@ int main(int argc, char *argv[]){
       //}
    }
    if( prob2.size() != frame ){
-      cout<<"WARNING: assignment of probability failed \n";
+      cout<<"ERROR: assignment of probability failed \n";
       cout<<"num of assigned = "<<prob2.size()<<endl;
       cout<<"num of structures = "<<frame<<endl;
       return 1;
@@ -230,7 +267,7 @@ flag_noprob:
 
    //string pmfcalculation  = inp1.read("PMFCALCULATION");
    string pmfcalculation  = "YES";
-   if( pmfcalculation == "YES"){
+   if( pmfcalculation == "YES" ){
 
    double length_bin = atof(inp1.read("BINSIZE").c_str());
    float emin = atof(inp1.read("MINCOORD").c_str());
