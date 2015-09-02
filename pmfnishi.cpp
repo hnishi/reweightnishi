@@ -1,4 +1,4 @@
-/* version v3.0  20150901
+/* version v3.1  20150901
 */
 
 #include"nlib.h"
@@ -389,15 +389,32 @@ flag_noprob:
       printf("cannot open output file: %s\n", outpmf.c_str() );
       return 1;
    }
+   //for R format
+   /*for(int i=0;i<num_bin;i++){
+     fprintf(fout,"%12.3f  ", emin+ length_bin * i);
+   }
+   fprintf(fout,"\n");
+   for(int i=0;i<num_bin;i++){
+     fprintf(fout,"%12.3f  ",emin+ length_bin * i);
+     for(int j=0;j<num_bin;j++){
+         if( pmf[j][i] == 0L ){
+         fprintf(fout,"%12.3f  ", 1000.0 );
+         }
+         else{
+         fprintf(fout,"%12.3f  ", (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
+         }
+     }
+     fprintf(fout,"\n");
+   }*/
+
+   //for gnuplot format
    for(int i=0;i<num_bin;i++){
       for(int j=0;j<num_bin;j++){
          if( pmf[j][i] == 0L ){
          fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j , emin + length_bin * i , 1000.0 );
-         //fprintf(fout,"%12.3f%12.3f%12.3f \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, 1000.0 );
          }
          else{
          fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j , emin + length_bin * i , (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
-         //fprintf(fout,"%12.3f%12.3f%12.3lf \n", emin + length_bin * j + length_bin / 2, emin + length_bin * i + length_bin / 2, (pmf[j][i] - min_pmf) / JOULE_CALORIE /1000L );
          }
       }
       fprintf(fout,"\n");
